@@ -33,57 +33,6 @@ Before we describe in detail about the above injection methods we will first add
 </dependency>
 ```
 
-**3.1 Constructor Injection**
-
-Constructor-based DI is accomplished when the container invokes a class constructor with a number of arguments, each representing a dependency on the other class.
-
-Using XML Configuration:
-
-```
-public class EmployeeService
-{
-   private IEmployeeDAO employeeDao;
-   public EmployeeService(IEmployeeDAO employeeDao){
-      this.employeeDao = employeeDao;
-   }
-}
-```
-```
-<bean id="EmployeeService" class="com.baeldung.spring.service.EmployeeService">
-   <constructor-arg>
-      <bean class="com.baeldung.spring.dao.impl.EmployeeDAO" />
-   </constructor-arg>
-</bean>
-```
-(or)
-```
-<bean id="EmployeeService" class="com.baeldung.spring.service.EmployeeService">
-   <constructor-arg ref="employeeDAO"/>
-</bean>
-<bean id="employeeDAO" class="com.baeldung.spring.dao.impl.EmployeeDAO"/>
-```
-Using Annotations:
-```
-@Configuration
-@ComponentScan("com.baeldung.spring")
-public class ApplicationConfig { 
-    @Bean
-    public IEmployeeDAO employeeDao() {
-        return new EmployeeDAO();
-    }
-}
-```
-```
-@Service
-public class EmployeeService {
-    private IEmployeeDAO employeeDao; 
-    @Autowired
-    public EmployeeService(IEmployeeDAO employeeDao) {
-        this.employeeDao= employeeDao;
-    }
-}
-```
-
 **3.2 Setter Injection**
 
 Setter-based DI is accomplished by the container calling setter methods on your beans after invoking a no-argument constructor or no-argument static factory method to instantiate your bean.
@@ -105,38 +54,14 @@ public class EmployeeService
 
 <bean id="employeeDAO" class="com.baeldung.dao.impl.EmployeeDAO"/>
 ```
-Using Annotations:
-```
-@Configuration
-@ComponentScan("com.baeldung.spring")
-public class ApplicationConfig {
-   @Bean
-   public IEmployeeDAO employeeDao() {
-      return new EmployeeDAO();
-   }
-}
-```
-```
-@Service
-public class EmployeeService {
-    private IEmployeeDAO employeeDao;
-    @Autowired
-    public setEmployeeDao(IEmployeeDAO employeeDao){
-        this.employeeDao = employeeDao;
-    }
-}
-```
+
 **4. Testing**
 
 By loading the beans.xml in which the beans are configured in that xml:
-
+```
 ApplicationContext context = new ClassPathXmlApplicationContext("classpath:beans.xml");
 EmployeeService employeeService = context.getBean(EmployeeService.class);
-
-By loading ApplicationConfig.class which uses annotation based configuration:
-
-ApplicationContext context = new AnnotationConfigApplicationContext(ApplicationConfig.class);
-EmployeeService employeeService = context.getBean(EmployeeService.class);
+```
 
 **5. Conclusion**
 
